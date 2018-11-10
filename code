@@ -1,0 +1,503 @@
+void setup()
+ 
+{
+ 
+for (int pin =  ; pin <= 19; pin++)
+ 
+  {
+ 
+    pinMode(pin,OUTPUT);
+ 
+  }
+ 
+}
+ 
+//Main Loop - Switches different LED Patterns
+ 
+void loop()
+ 
+{
+int pickme = random(1,20); // picks a random pattern of LED patterns
+ 
+switch(pickme)
+ 
+  {
+ 
+  case 1:
+ 
+    onrun(random(20,50));
+ 
+  break;
+ 
+  case 2:
+ 
+    alternate(random(80,100));
+ 
+  break;
+ 
+  case 3:
+ 
+    offrun(random(20,50));
+ 
+  break;
+ 
+  case 4:
+ 
+    stack(random(30,50));
+ 
+  break;
+ 
+  case 5:
+ 
+    chaser(random(80,100));
+ 
+  break;
+ 
+  case 6:
+ 
+    fadealter(random(80,100));
+ 
+  break;
+ 
+  }
+ 
+}
+ 
+void clearall()
+ 
+{
+ 
+  for (int pin = 2; pin <= 19; pin++)
+ 
+  {
+ 
+  digitalWrite(pin,LOW);
+ 
+  }
+ 
+}
+ 
+ 
+void fillall()
+ 
+{
+ 
+  for (int pin = 2; pin <= 19; pin++)
+ 
+  {
+ 
+  digitalWrite(pin, HIGH);
+ 
+  }
+ 
+}
+ 
+ 
+//One ON LED Run and all other OFF
+ 
+void onrun(int delaytime)
+ 
+{
+ 
+  for(int pin = 2; pin <= 19; pin++)
+ 
+  {
+ 
+  clearall();
+ 
+  digitalWrite(pin, HIGH);
+ 
+  delay(delaytime);
+ 
+  }
+ 
+  for(int pin = 18; pin >= 2; pin--)
+ 
+  {
+ 
+  clearall();
+ 
+  digitalWrite(pin, HIGH);
+ 
+  delay(delaytime);
+ 
+  }
+ 
+}
+ 
+//One OFF LED Run and all other OFF
+ 
+void offrun(int delaytime)
+ 
+{
+ 
+  for(int pin = 2; pin <= 19; pin++)
+ 
+  {
+ 
+  fillall();
+ 
+  digitalWrite(pin, LOW);
+ 
+  delay(delaytime);
+ 
+  }
+ 
+  for(int pin = 18; pin >= 2; pin--)
+ 
+  {
+ 
+  fillall();
+ 
+  digitalWrite(pin, LOW);
+ 
+  delay(delaytime);
+ 
+  }
+ 
+}
+ 
+ 
+//Flashing all LEDs ON and OFF
+ 
+void flash(int delaytime)
+ 
+{
+ 
+  for(int i = 1; i <=20; i++)
+ 
+  {
+ 
+  clearall();
+ 
+  delay(delaytime);
+ 
+  fillall();
+ 
+  delay(delaytime);
+ 
+  }
+ 
+}
+ 
+ 
+//Flashing LED in Fade manner
+ 
+void fadeflash(int delaytime)
+ 
+{
+ 
+clearall();
+ 
+int newdelay = delaytime / 5;
+ 
+  for(int fade = 0; fade <= 255; fade += 5)
+ 
+  {
+ 
+    for(int pin = 2; pin <= 19; pin++)
+ 
+    {
+ 
+    analogWrite(pin, fade);
+ 
+    }
+ 
+  delay(newdelay);
+ 
+  }
+ 
+ 
+ 
+  for(int fade = 255; fade >= 0; fade -= 5)
+ 
+  {
+ 
+    for(int pin = 2; pin <= 19; pin++)
+ 
+    {
+ 
+    analogWrite(pin, fade);
+ 
+    }
+ 
+  delay(newdelay);
+ 
+  }
+ 
+}
+ 
+//Alternatively Fade & Brightens
+ 
+void fadealter(int delaytime)
+ 
+{
+ 
+clearall();
+ 
+int newdelay = delaytime / 5;
+ 
+  for(int fade = 0; fade <= 255; fade += 5)
+ 
+  {
+ 
+    for(int i = 2; i <= 18; i+=2)
+ 
+    {
+ 
+    analogWrite(i, fade);
+ 
+    }
+ 
+    for (int j = 3; j <= 19; j += 2)
+ 
+    {
+ 
+    analogWrite(j, 255-fade);
+ 
+    }
+ 
+  delay(newdelay);
+ 
+  }
+ 
+ 
+ 
+  for(int fade = 255; fade >= 0; fade -= 5)
+ 
+  {
+ 
+    for(int i = 2; i <= 18; i+=2)
+ 
+    {
+ 
+    analogWrite(i, fade);
+ 
+    }
+ 
+ 
+ 
+  for (int j = 3; j <= 19; j += 2)
+ 
+  {
+ 
+  analogWrite(j, 255-fade);
+ 
+  }
+ 
+  delay(newdelay);
+ 
+  }
+ 
+}
+ 
+//Alternate Flash - Similar to Flash but alternate LEDs
+ 
+void alternate(int delaytime)
+ 
+{
+ 
+  for (int n = 1; n <= 5; n++)
+ 
+  {
+ 
+  clearall();
+ 
+  for (int i = 2; i <= 18; i += 2)
+ 
+    {
+ 
+    digitalWrite(i, HIGH);
+ 
+    }
+ 
+  delay(delaytime);
+ 
+  clearall();
+ 
+  for (int j = 3; j <= 19; j += 2)
+ 
+    {
+ 
+    digitalWrite(j, HIGH);
+ 
+    }
+ 
+  delay(delaytime);
+ 
+  }
+ 
+}
+ 
+//Putting all LEDs one by one in a stack
+ 
+void stack(int delaytime)
+ 
+{
+ 
+int stack = 0;
+ 
+while(stack < 18)
+ 
+  {
+ 
+  for(int pos = 2; pos <= (19 - stack); pos++)
+ 
+    {
+ 
+    clearall();
+ 
+    digitalWrite(pos, HIGH);
+ 
+    drawstack(stack);
+ 
+    delay(delaytime);
+ 
+    }
+ 
+  stack++;
+ 
+  }
+ 
+}
+ 
+//Subfunction of the stack function
+ 
+void drawstack(int stack)
+ 
+{
+ 
+  for(int n = 19; n > (19 - stack); n--)
+ 
+    {
+ 
+    if(n >= 2)
+ 
+      {
+ 
+      digitalWrite(n, HIGH);
+ 
+      }
+ 
+    }
+ 
+}
+ 
+ 
+//One LED chases another LED front and back
+ 
+void chaser(int delaytime)
+ 
+{
+ 
+int div = 40;
+ 
+int flashtime = delaytime / div;
+ 
+int A = random(2,7);
+ 
+int B = random(7,12);
+ 
+int Av = 1;
+ 
+int Bv = 1;
+ 
+if(random(0,2))
+ 
+{
+ 
+Av *= -1;
+ 
+}
+ 
+if(random(0,2))
+ 
+{
+ 
+Bv *= -1;
+ 
+}
+ 
+for(int time = 1; time < 100; time++)
+ 
+{
+ 
+if(abs(A-B) == 1 && (Av*Bv) == -1)
+ 
+{
+ 
+for(int f = 1; f < round(div/4); f++)
+ 
+{
+ 
+clearall();
+ 
+delay(flashtime);
+ 
+digitalWrite(A, HIGH);
+ 
+digitalWrite(B, HIGH);
+ 
+delay(flashtime);
+ 
+}
+ 
+Av *= -1;
+ 
+Bv *= -1;
+ 
+A += Av;
+ 
+B += Bv;
+ 
+}
+ 
+else
+ 
+{
+ 
+clearall();
+ 
+digitalWrite(A, HIGH);
+ 
+digitalWrite(B, HIGH);
+ 
+A += Av;
+ 
+B += Bv;
+ 
+delay(delaytime);
+ 
+}
+ 
+if(A < 2)
+ 
+{
+ 
+A = 3;
+ 
+Av *= -1;
+ 
+}
+ 
+if(B > 19)
+ 
+{
+ 
+B = 18;
+ 
+Bv *= -1;
+ 
+}
+ 
+if(A >= B)
+ 
+{
+ 
+A = B-1;
+ 
+}
+ 
+}
+ 
+}
